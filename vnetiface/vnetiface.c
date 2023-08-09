@@ -13,8 +13,6 @@
 #include <unistd.h>
 #include <netinet/ether.h>
 
-#define ETHER_RAW_SIZE 18
-
 #define USAGE1 "usage: %s [-e <ether_addr>] [-h] create|destroy <interface>\n"
 char *usage2 =
 	"\t-e  Use ethernet address <ether_addr>\n"
