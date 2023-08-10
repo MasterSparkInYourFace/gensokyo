@@ -25,25 +25,31 @@ sub load_dummy {
 	die("modprobe exited with non-zero (" . ($? >> 8) . ")\n") if ($? >> 8 != 0);
 }
 
+sub ip {
+	system("ip", @_);
+
+	die("system(ip) failed: $!\n") if ($? == -1);
+	die("ip exited with non-zero (" . ($? >> 8) . ")\n") if ($? >> 8 != 0);
+}
+
 sub ifcreate {
 	return if (ifexists);
 	
 	load_dummy;
 	
-	system("ip", "link", "add", "gensok0",
-		# NSOKYO (fucking unicast addresses can't start with an odd octet)
+	ip("link", "add", "gensok0",
 		address => "4e:53:4f:4b:59:4f",
 		type    => "dummy");
-	die("system(ip) failed: $!\n") if ($? == -1);
-	die("ip exited with non-zero (" . ($? >> 8) . ")\n") if ($? >> 8 != 0);
+
+	ip("addr", "add", "103.110.115.0/24", "dev", "gensok0");
+	ip("addr", "add", "fd67:6e73:6f6b:796f::1/64", "dev", "gensok0");
+	ip("link", "set", "gensok0", "up");
 }
 
 sub ifdelete {
 	return if (!ifexists);
 
-	system("ip", "link", "del", "gensok0", "type", "dummy");
-	die("system(ip) failed: $!\n") if ($? == -1);
-	die("ip exited with non-zero (" . ($? >> 8) . ")\n") if ($? >> 8 != 0);
+	ip("link", "del", "gensok0", "type", "dummy");
 }
 
 if ($> != 0) {
