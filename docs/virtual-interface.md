@@ -8,11 +8,12 @@ The helper script included in this repository (`interface.pl`) already creates t
 
 Keep in mind that you can absolutely bind to a real interface as well should you want to give remote access to the virtual network. Using a virtual interface is basically like using a loopback device a-la localhost but with its own set of ports, so you can just use localhost if you don't want a separate set of ports.
 
-To configure the interface with systemd (on a Linux system), you should first enable the `dummy` kernel module on boot. You can utilize systemd's `systemd-modules-load` service by writing the module name to `/etc/modules-load.d/modules.conf`.
+To be able to create dummy interfaces, you should enable the `dummy` kernel module, preferably on boot. You can utilize systemd's `systemd-modules-load` service by writing the module name to `/etc/modules-load.d/modules.conf`.
 You can also add the module to your ramdisk, but that depends on the distribution you're using.
 For debian etc., see documentation for `initramfs-tools` and for arch-based distros see `mkinitcpio`.
+To load the module temporarily, `modprobe dummy` as root will do the trick.
 
-Secondly, you should enable the systemd-networkd service. you can do this by running `systemctl enable systemd-networkd`.
+To configure using systemd, you should enable the systemd-networkd service. you can do this by running `systemctl enable systemd-networkd`.
 
 You should then make two files called `10-gensokyo.netdev` and `11-gensokyo.network` under `/etc/systemd/network` .
 
@@ -36,7 +37,7 @@ Address=103.110.115.0/24
 Address=fd67:6e73:6f6b:796f::1/64
 ```
 
-To configure using NetworkManager, run
+To configure using NetworkManager instead of systemd, run
 ```sh
 nmcli conn add con-name gensokyo-interface \
 	ifname gensok0
