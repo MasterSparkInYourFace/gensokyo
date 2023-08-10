@@ -35,3 +35,13 @@ Description=Gensokyo virtual network interface
 Address=103.110.115.0/24
 Address=fd67:6e73:6f6b:796f::1/64
 ```
+
+To configure using NetworkManager, run
+```sh
+nmcli conn add con-name gensokyo-interface \
+	ifname gensok0
+	type dummy
+	ip4 103.110.115.0/24
+	ip6 fd67:6e73:6f6b:796f::1/64
+	mac 4e:53:4f:4b:59:4f
+```
