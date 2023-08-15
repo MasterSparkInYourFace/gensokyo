@@ -58,7 +58,7 @@ int ip6_make_addr(struct sockaddr_in6 *sa, const char *addr, uint16_t port, uint
 	srand48_r(t.tv_nsec, &rd);
 	lrand48_r(&rd, &lr);
 	// more significant bits are better. flowinfo is 20-bit
-	sa->sin6_flowinfo = (lr >> 12) & 0xFFFFF;
+	sa->sin6_flowinfo = (lr >> 11) & 0xFFFFF;
 	return 0;
 }
 
