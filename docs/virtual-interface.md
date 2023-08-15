@@ -1,3 +1,5 @@
+# Virtual interface
+
 If you want to use a virtual interface for gensokyo, it should be configured as such:
 - name: `gensok0`
 - MAC/"hardware" address: `4e:53:4f:4b:59:4f`
