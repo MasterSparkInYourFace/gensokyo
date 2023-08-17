@@ -8,9 +8,12 @@
 - implement these protocols
 - implement the daemon
 - implement non-hardcoded types for nodes
-- **code running on nodes**
-	- daemon actually runs the code
-	- code can do whatever it wants on the node
-	- code registered locally via plugins, associated with a new node type
+- code running on nodes
+	- daemon executes node code
+	- code is unrestricted
+	- implemented via plugins which provide a unique name and node type
 	- allows for extending gensokyonet functionality without the need to alter core
-		- example: node that runs an embedded programming language
+- freezing a network on file
+	- store map of node type names -> type ids
+	- store the nodes themselves (address, name, type id, persistent data)
+	- persistent data optionally provided by nodes on shutdown, passed to nodes on wakeup
