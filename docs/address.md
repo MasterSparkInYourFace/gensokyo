@@ -2,14 +2,8 @@
 
 ## Structure
 
-An address in GensokyoNet is fairly simple. The components of the address are described by this structure:
-```c
-typedef struct GensokyoAddr_s {
-	uint8_t gns_type; // address type
-	uint8_t gns_prefix[7]; // network prefix
-	uint8_t gns_unique[8]; // unique part
-} GensokyoAddr;
-```
+An address in GensokyoNet is fairly simple. They consist of a one-byte "type" value followed by a seven-byte network prefix and an 8-byte unique part which describes the node uniquely in its network.
+
 The addresses bear a passing similarity to IPv6, with reduced complexity for the purposes of GensokyoNet.
 
 ## Types
@@ -30,4 +24,4 @@ Examples:
 - `1ba~dcaf~e2fe~eda7~1000~~` - same, except the unique part is `1000000000000000`
 - `3af~~1` - GNSA_HIDDEN address with a prefix of `af00000000000000` and a unique part of `0000000000000001`
 
-(god I don't look forward to writing the parser. spare the sympathy, text processing is my enemy)
+You can see how addresses are parsed with the test program in `src/`
