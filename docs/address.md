@@ -24,4 +24,4 @@ Examples:
 - `1ba~dcaf~e2fe~eda7~1000~~` - same, except the unique part is `1000000000000000`
 - `3af~~1` - GNSA_HIDDEN address with a prefix of `af00000000000000` and a unique part of `0000000000000001`
 
-You can see how addresses are parsed with the test program in `src/`
+You can see how addresses are parsed with the `test_gns_address` program in `src/`
