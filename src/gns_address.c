@@ -1,6 +1,5 @@
 #include "gns_address.h"
 
-#include <stdio.h> // temporary - debugging
 #include <string.h>
 
 // I should probably put these in a generic utils header at some point
