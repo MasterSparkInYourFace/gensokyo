@@ -21,7 +21,7 @@ char xlt[XLT_SIZE] = {
 };
 
 static inline uint8_t x2i(char x) {
-	if (x < 0 || x >= XLT_SIZE)
+	if ((int8_t) x < 0 || (int8_t) x >= XLT_SIZE)
 		return 255;
 	return xlt[(int8_t) x];
 }
