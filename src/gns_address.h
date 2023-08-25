@@ -11,10 +11,10 @@
 // we can't even have types that have specific widths, so you have to rely
 // on a header that does a bunch of preprocessor checks in order to
 // assign one of the built-in unclear-size int types to a defined size,
-// which depends on the system you're compiling for.
+// and the type assigned depends on the system you're compiling for.
 // I've been writing C for like 6-7 years at this point and only now have I
 // actually considered how ridiculous this is after getting to try out
-// tools like Rust and Zig which have these types built into the language
+// tools like rust and zig which have these types built into the language
 // with handy names such as "u32" and "i8" (not "uint32_t" and "int8_t")
 // and without the need to include a header that, while standard, isn't
 // actually built into the compiler implementation.

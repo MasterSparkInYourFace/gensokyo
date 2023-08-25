@@ -1,7 +1,6 @@
 #include "gns_address.h"
 
 #include <string.h>
-#include <stdio.h> // FOR DEBUGGING, I SWEAR IF YOU DON'T REMOVE IT
 
 // I should probably put these in a generic utils header at some point
 #define XLT_SIZE 103
@@ -133,7 +132,7 @@ int gns_addr_btoa(GensokyoAddr *addr, char *dst, uint64_t len) {
 	uint32_t s0_begin, s0_len, s0_l_begin, s0_l_len;
 	uint8_t  spos, leading, n, s0;
 
-	// locate longest section of 0s
+	// locate longest section of 0s for shortening
 	for (s0_l_len = 0, s0_len = 0, s0 = 0, pos = 0; pos < GNS_ADDR_SIZE; pos += 2) {
 		s = (addr->gnsa_addr[pos]) << 8 | addr->gnsa_addr[pos + 1];
 		if (s == 0) {
