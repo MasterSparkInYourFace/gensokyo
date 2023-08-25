@@ -16,11 +16,24 @@ void print_addr_err(int c) {
 		case GNSA_ERR_MAL_SECTILDE:
 			fprintf(stderr, "gns_addr_atob: invalid tilde placement\n");
 			break;
-		case GNSA_ERR_MAL_LEN:
+		case GNSA_ERR_LEN:
 			fprintf(stderr, "gns_addr_atob: address too long\n");
 			break;
 		default:
 			fprintf(stderr, "gns_addr_atob: unknown error\n");
+	}
+}
+
+void print_addr_btoa_err(int c) {
+	switch (c) {
+		case 0:
+			puts("gns_addr_btoa returns OK");
+			break;
+		case GNSA_ERR_LEN:
+			fprintf(stderr, "gns_addr_btoa: not enough space to write address\n");
+			break;
+		default:
+			fprintf(stderr, "gns_addr_btoa: unknown error\n");
 	}
 }
 
@@ -32,6 +45,7 @@ void print_addr(GensokyoAddr *a) {
 
 int main(int argc, char **args) {
 	GensokyoAddr a;
+	char ar[64] = { 0 };
 	int r;
 
 	if (argc < 2) {
@@ -42,8 +56,14 @@ int main(int argc, char **args) {
 	printf("address: %s\n", args[1]);
 	r = gns_addr_atob(&a, args[1]);
 	print_addr_err(r);
-	if (r >= 0)
+	if (r >= 0) {
+		fputs("bytes: ", stdout);
 		print_addr(&a);
+	}
+	r = gns_addr_btoa(&a, ar, sizeof(ar) - 1);
+	print_addr_btoa_err(r);
+	if (r >= 0)
+		printf("readable re-conversion: %s\n", ar);
 
 	return -r;
 }

@@ -32,9 +32,9 @@ typedef struct _sGensokyoAddr {
 #define GNSA_ERR_MAL_SECLEN -1 // malformed address - too many characters in section
 #define GNSA_ERR_MAL_SECINVAL -2 // malformed address - invalid character in section
 #define GNSA_ERR_MAL_SECTILDE -3 // malformed address - second tilde pair
-#define GNSA_ERR_MAL_LEN -4 // malformed address - too long
+#define GNSA_ERR_LEN -4 // length-related error
 
 int gns_addr_atob(GensokyoAddr *addr, const char *src);
 
-// dstlen: space available to write representation
-int gns_addr_btoa(GensokyoAddr *addr, char *dst, uint64_t dstlen);
+// len: space available to write representation. I'd go with 64
+int gns_addr_btoa(GensokyoAddr *addr, char *dst, uint64_t len);

@@ -1,6 +1,7 @@
 #include "gns_address.h"
 
 #include <string.h>
+#include <stdio.h> // FOR DEBUGGING, I SWEAR IF YOU DON'T REMOVE IT
 
 // I should probably put these in a generic utils header at some point
 #define XLT_SIZE 103
@@ -26,29 +27,30 @@ static inline uint8_t x2i(char x) {
 	return xlt[(int8_t) x];
 }
 
+// decided to become IOCCC programmer 'cause branches are expensive :3
+// also I'm sure assuming encoding is very smart and portable
+static inline char i2x(uint8_t n) {
+	// adding 49 gets us from '0' to 'a'
+	return (n % 10 + '0' + n / 10 * 49) | ((n > 15) * 0xFF);
+}
+
+static inline uint8_t ex4(uint16_t s, uint8_t i) {
+	return ((s >> (i << 2)) & 0xF) | ((i > 3) * 0xFF);
+}
+
 static inline uint16_t sswap(uint16_t n, uint8_t cl) {
-	switch (cl) {
-		case 1:
-			return n;
-		case 2:
-			return ((n >> 4) & 0xF) | ((n & 0xF) << 4);
-		case 3:
-			return ((n >> 8) & 0xF) | (n & 0xF0) | ((n & 0xF) << 8);
-		case 4:
-			return
-				(((n >> 12) & 0xF)      ) |
-				(((n >>  8) & 0xF) <<  4) |
-				(((n >>  4) & 0xF) <<  8) |
-				(((n      ) & 0xF) << 12);
-	}
-	return 0;
+	return
+		(ex4(n, 3)      |
+		 ex4(n, 2) << 4 |
+		 ex4(n, 1) << 8 |
+		 (n & 0xF) << 12) >> ((4 - cl) << 2);
 }
 
 // copy section from uint16_t to address bytes
 static inline int scopy(GensokyoAddr *addr, uint32_t p, uint16_t s) {
 	// GNS_ADDR_SIZE - 1 means there's an extra byte somewhere somehow. very bad
 	if (p >= GNS_ADDR_SIZE - 1)
-		return GNSA_ERR_MAL_LEN;
+		return GNSA_ERR_LEN;
 	addr->gnsa_addr[p] = (s >> 8) & 0xFF;
 	addr->gnsa_addr[p + 1] = s & 0xFF;
 	return 0;
@@ -63,7 +65,7 @@ int gns_addr_atob(GensokyoAddr *addr, const char *src) {
 	uint8_t xc, has_p2 = 1, finalized = 0;
 	uint16_t sec = 0;
 	// p2_pos is 14 because phase 2 travels backwards
-	uint32_t p1_pos = 0, p2_pos = 14, secl = 0;
+	uint32_t p1_pos = 0, p2_pos = GNS_ADDR_SIZE - 2, secl = 0;
 	
 	memset(addr->gnsa_addr, 0, GNS_ADDR_SIZE);
 	
@@ -113,7 +115,7 @@ int gns_addr_atob(GensokyoAddr *addr, const char *src) {
 			if (finalized || c == p2_begin)
 				return GNSA_ERR_MAL_SECTILDE;
 			if (p2_pos <= p1_pos) // overlap - phase 2 too long
-				return GNSA_ERR_MAL_LEN;
+				return GNSA_ERR_LEN;
 			if ((r = scopy(addr, p2_pos, sswap(sec, secl))) < 0)
 				return r;
 			p2_pos -= 2, secl = 0, sec = 0, finalized = 1;
@@ -123,4 +125,57 @@ int gns_addr_atob(GensokyoAddr *addr, const char *src) {
 		return r;
 	// congrats on your fresh address in raw form
 	return 0;
+}
+
+int gns_addr_btoa(GensokyoAddr *addr, char *dst, uint64_t len) {
+	uint16_t s;
+	uint64_t clen, pos;
+	uint32_t s0_begin, s0_len, s0_l_begin, s0_l_len;
+	uint8_t  spos, leading, n, s0;
+
+	// locate longest section of 0s
+	for (s0_l_len = 0, s0_len = 0, s0 = 0, pos = 0; pos < GNS_ADDR_SIZE; pos += 2) {
+		s = (addr->gnsa_addr[pos]) << 8 | addr->gnsa_addr[pos + 1];
+		if (s == 0) {
+			if (s0) {
+				s0_len += 2;
+				continue;
+			}
+			s0_begin = pos;
+			s0_len = 2;
+			s0 = 1;
+		} else {
+			s0 = 0;
+			if (s0_len <= s0_l_len)
+				continue;
+			s0_l_len = s0_len;
+			s0_l_begin = s0_begin;
+		}
+	}
+	if (s0_len > s0_l_len) {
+		s0_l_len = s0_len;
+		s0_l_begin = s0_begin;
+	}
+
+	// len - 5 is for safety. this loop writes at most 5 bytes in one iteration
+	for (pos = 0, clen = 0; clen < len - 5 && pos < GNS_ADDR_SIZE; pos += 2) {
+		s = (addr->gnsa_addr[pos] << 8) | addr->gnsa_addr[pos + 1];
+		if (!s && pos >= s0_l_begin && pos < s0_l_begin + s0_l_len) {
+			dst[clen++] = ADDR_SEP;
+			pos += s0_l_len - 2;
+			continue;
+		}
+		for (spos = 0, leading = 1; spos < 4; spos++) {
+			n = ex4(s, 3 - spos);
+			if (n == 0 && leading)
+				continue;
+			leading = 0;
+			dst[clen++] = i2x(n);
+		}
+		if (leading)
+			dst[clen++] = '0';
+		if (pos < GNS_ADDR_SIZE - 2)
+			dst[clen++] = ADDR_SEP;
+	}
+	return (pos < GNS_ADDR_SIZE) * GNSA_ERR_LEN;
 }
