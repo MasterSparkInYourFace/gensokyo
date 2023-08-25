@@ -59,7 +59,8 @@ int main(int argc, char **args) {
 	if (r >= 0) {
 		fputs("bytes: ", stdout);
 		print_addr(&a);
-	}
+	} else
+		return -r;
 	r = gns_addr_btoa(&a, ar, sizeof(ar) - 1);
 	print_addr_btoa_err(r);
 	if (r >= 0)
