@@ -1,37 +1,7 @@
 #include "gns_address.h"
+#include "util.h"
 
 #include <string.h>
-
-// I should probably put these in a generic utils header at some point
-#define XLT_SIZE 103
-char xlt[XLT_SIZE] = {
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 0,    1,    2,    3,    4,    5,    6,    7,
-	 8,    9,    255,  255,  255,  255,  255,  255,
-	 255,  10,   11,   12,   13,   14,   15,   255,
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 255,  255,  255,  255,  255,  255,  255,  255,
-	 255,  10,   11,   12,   13,   14,   15
-};
-
-static inline uint8_t x2i(char x) {
-	if ((int8_t) x < 0 || (int8_t) x >= XLT_SIZE)
-		return 255;
-	return xlt[(int8_t) x];
-}
-
-// decided to become IOCCC programmer 'cause branches are expensive :3
-// also I'm sure assuming encoding is very smart and portable
-static inline char i2x(uint8_t n) {
-	// adding 49 gets us from '0' to 'a'
-	return (n % 10 + '0' + n / 10 * 49) | ((n > 15) * 0xFF);
-}
 
 static inline uint8_t ex4(uint16_t s, uint8_t i) {
 	return ((s >> (i << 2)) & 0xF) | ((i > 3) * 0xFF);

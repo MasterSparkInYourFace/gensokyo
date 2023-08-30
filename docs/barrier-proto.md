@@ -1,15 +1,16 @@
 # Barrier (daemon) protocol
-(todo, blocked by address docs)
+(todo)
 
-The barrier isn't concerned about connection IDs, as all supported underlying protocols for communication are stream-based.
-
+All supported underlying protocols for communication are stream-based.
 All values are transmitted in "network byte order".
-Header structure for all requests:
+
+Header structure for all requests from client to barrier daemon:
 ```c
-typedef struct BHeaderC_s {
-	uint32_t magic;       // fourCC; "GnsC"
+typedef struct GNSBarrierRequest_s {
+	uint32_t magic;       // fourCC; "GnsR"
 	uint8_t  type;        // type of message
 	uint64_t data_length; // length of data following this header
-} BHeaderC;
+} GNSBarrierRequest;
 ```
+Non-hardcoded request types, such as encrypted requests, with their own headers and data, are encapsulated with this header, as described below (todo).
 ## Connection / handshake (TODO)
