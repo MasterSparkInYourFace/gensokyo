@@ -41,7 +41,3 @@ When creating a user, the barrier operator may pick from a number of OpenSSL EVP
 Authentication also implies the establishment of an encrypted connection, the cipher of which is determined in this header and can be picked freely by the user (again, only one algorithm is actually planned for now, which is AES-GCM for its extra auth capability).
 
 ## Connection / handshake - barrier (todo)
-
-When the barrier daemon gets hold of a new connection, the first message it receives must be the client handshake or else the connection is terminated.
-
-Once a valid GNSR_CONNECT message
