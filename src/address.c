@@ -1,5 +1,5 @@
-#include "gns_address.h"
-#include "util.h"
+#include "gensokyo/address.h"
+#include "gensokyo/util.h"
 
 #include <string.h>
 

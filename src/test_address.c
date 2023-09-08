@@ -1,4 +1,4 @@
-#include "gns_address.h"
+#include "gensokyo/address.h"
 
 #include <stdio.h>
 

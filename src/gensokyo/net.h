@@ -1,11 +1,13 @@
 #pragma once
-#include <stdint.h>
+#include "gensokyo/types.h"
+#include "gensokyo/util.h"
 
+// socket helpers
 #ifdef unix
 #define UNF_ABSTRACT 1
 #define UNF_BIND     2
 int unix_socket(const char *addr, uint8_t flags);
-#endif
+#endif // unix
 
 // port is in HOST BYTE ORDER. do not translate it yourself
 #define TCPF_BIND 1

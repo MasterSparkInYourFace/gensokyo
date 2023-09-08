@@ -33,11 +33,6 @@ A client first requests a connection to a barrier instance by sending it a messa
 
 No other data is necessary for a basic connection over any underlying protocol and as such the `data_length` field for those connections is 0. If authentication is required, it is set to the total size of the individual fields of the `GNSBarrierAuth` structure (worded this way because the size of the struct itself might be different depending on alignment, meanwhile the protocol does not align anything).
 
-For authentication, the client picks a key exchange algorithm and encryption cipher, filling the `GNSBarrierAuth` structure accordingly before sending it and the appropriate data to the barrier **(todo; this data will be described in another document later)**.
-
-**TODO: move this part to encryption docs. not relevant for the handshake itself**
-When creating a user, the barrier operator may pick from a number of OpenSSL EVP key exchange methods supported by gensokyonet (at the time of writing, I only have plans for X25519).
-
-Authentication also implies the establishment of an encrypted connection, the cipher of which is determined in this header and can be picked freely by the user (again, only one algorithm is actually planned for now, which is AES-GCM for its extra auth capability).
+For authentication, the client picks a key exchange algorithm and encryption cipher, filling the `GNSBarrierAuth` structure accordingly before sending it and the appropriate data to the barrier **(TODO: describe in encryption docs)**.
 
 ## Connection / handshake - barrier (todo)

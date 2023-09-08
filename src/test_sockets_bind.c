@@ -1,4 +1,4 @@
-#include "net.h"
+#include "gensokyo/net.h"
 
 #include <stdio.h>
 #include <signal.h>
